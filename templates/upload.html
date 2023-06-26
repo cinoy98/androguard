@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
   <body>
     <h1>Upload an APK file</h1>
@@ -10,5 +10,26 @@
       </select>
       <input type="submit" value="Upload and Analyze">
     </form>
+  </body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <h1 class="animate__animated animate__fadeInDown">Upload an APK file</h1>
+    <form method="POST" enctype="multipart/form-data" action="/" class="animate__animated animate__fadeInUp">
+      <input type="file" name="file" accept=".apk" required>
+      <select name="model">
+        <option value="lstm">LSTM</option>
+        <option value="voting">voting</option>
+      </select>
+      <input type="submit" value="Upload and Analyze" class="animate__animated animate__fadeIn">
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
   </body>
 </html>

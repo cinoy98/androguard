@@ -1,7 +1,22 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
   <body>
     <h1>Prediction Result</h1>
     <p>Prediction: {{ prediction }}</p>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <h1 class="animate__animated animate__fadeInDown">Prediction Result
+      <br><p class="animate__animated animate__fadeIn">{{ prediction }}</p>
+    </h1>
+ 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
   </body>
 </html>
