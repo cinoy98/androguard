@@ -36,7 +36,7 @@ def upload_file():
         apk_file = request.files['file']
 
         # Save the uploaded file to a temporary location
-        apk_path = 'C:/Entertainment/swabna-project/uploaded_' + apk_file.filename
+        apk_path = 'uploaded/' + apk_file.filename
         apk_file.save(apk_path)
         # apk_path = '/content/drive/MyDrive/swabna/inshot.apk'
         a = apk.APK(apk_path)
