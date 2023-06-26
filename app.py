@@ -3,9 +3,10 @@ from flask import Flask, render_template, request
 import pickle
 # from androguard.misc import APK
 from androguard.core.bytecodes import apk
-
+import numpy as np
 import pandas as pd
-
+import keras
+import tensorflow as tf
 # Specify the header values
 header = ["Column1", "Column2"]
 
@@ -24,11 +25,6 @@ obj = defaultdict(int)
 for value in df["Column1"].unique():
     obj[value] = 0
 
-# Print the object
-
-
-
-
 app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -38,7 +34,6 @@ def upload_file():
         # Save the uploaded file to a temporary location
         apk_path = 'uploaded/' + apk_file.filename
         apk_file.save(apk_path)
-        # apk_path = '/content/drive/MyDrive/swabna/inshot.apk'
         a = apk.APK(apk_path)
 
         ###Extracting Intent Filters
@@ -55,11 +50,7 @@ def upload_file():
                     obj[intent] = 1
 
         print("after intend",obj)
-            #     print("Activity Name:", attribute)
-            #     print("Intent Action:", ', '.join(used_intents['action']))
-            #     print("Intent Category:", ', '.join(used_intents['category']))
 
-        # Extracting used permissions
         used_permissions = a.get_permissions()
         print("\nUsed Permissions:")
         for permission in used_permissions:
@@ -68,35 +59,17 @@ def upload_file():
             if value in obj:
                     obj[value] = 1
             print(permission)
-        # apk_file = request.files['file']
+
         print("after permission",obj)
-        # Save the uploaded file to a temporary location
-#         apk_path = 'C:/Information Security/swabna/temp' + apk_file.filename
-#         apk_file.save(apk_path)
+        temp = pd.DataFrame(obj, index=[0])
 
-#         # Process the APK file using Androguard
-#         apk = APK(apk_path)
-#         print("before apk",obj)
-#         # Extract the desired information (permissions, API calls, intent, etc.)
-#         permissions = apk.get_permissions()
-#         # Iterate over the unique values in "Column1"
-#         for value in df["Column1"].unique():
-#             if value in permissions:
-#                 obj[value] = 1
-
-# # Print the object
-#         print("after apk",obj)
-#         print(obj)
-#         api_calls = apk.get_android_api_calls()
-#         intent = apk.get_intent_filters()
-#         print(permissions,api_calls,intent)
-#         # Load the machine learning model
+        x_test = temp.to_numpy()
         model = load_model(request.form['model'])
-
-        # Perform the prediction using the loaded model
-        # prediction = model.predict([permissions, api_calls, intent])[0]
-        prediction = model.predict(obj)
-        return render_template('result.html', prediction=prediction)
+        prediction = model.predict(x_test)
+        print("prediction",prediction)
+        reshaped_array = prediction.reshape(-1, 1)
+        result=reshaped_array[0]
+        return render_template('result.html', prediction=result[0])
 
     return render_template('upload.html')
 
@@ -104,16 +77,11 @@ def load_model(model_name):
     # Load the corresponding pickle file based on the selected model
     if model_name == 'lstm':
         with open('lstm.pkl', 'rb') as f:
-            model = pickle.load(f)
+            model = keras.models.load_model('my_model.h5')
     elif model_name == 'voting':
         with open('ensmvoting.pkl', 'rb') as f:
             model = pickle.load(f)
-    # elif model_name == 'svm':
-    #     with open('svm_model.pkl', 'rb') as f:
-    #         model = pickle.load(f)
-    # elif model_name == 'knn':
-    #     with open('knn_model.pkl', 'rb') as f:
-    #         model = pickle.load(f)
+ 
     else:
         # Handle the case when an invalid model option is selected
         raise ValueError('Invalid model option selected.')
