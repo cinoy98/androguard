@@ -58,7 +58,7 @@ input[type="submit"]:hover {
 
 /* Animation classes */
 .animate__animated {
-  animation-duration: 1s;
+  animation-duration: 4s;
   animation-fill-mode: both;
 }
 

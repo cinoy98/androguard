@@ -69,15 +69,19 @@ def upload_file():
         print("prediction",prediction)
         reshaped_array = prediction.reshape(-1, 1)
         result=reshaped_array[0]
-        return render_template('result.html', prediction=result[0])
+        if result[0] <= 0.6:
+            return render_template('result.html', prediction="Benign")
+        else:
+            return render_template('result.html', prediction="Malign")
 
     return render_template('upload.html')
 
 def load_model(model_name):
     # Load the corresponding pickle file based on the selected model
-    if model_name == 'lstm':
-        with open('lstm.pkl', 'rb') as f:
-            model = keras.models.load_model('my_model.h5')
+    if model_name == 'sequential':
+        model = keras.models.load_model('my_model.h5')
+    elif model_name == 'lstm':
+        model = keras.models.load_model('finallstm.h5')
     elif model_name == 'voting':
         with open('ensmvoting.pkl', 'rb') as f:
             model = pickle.load(f)
